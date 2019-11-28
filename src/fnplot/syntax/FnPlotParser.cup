@@ -1,0 +1,149 @@
+package fnplot.syntax;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.*;
+import fnplot.sys.SyntaxFnPlotException;
+import fnplot.values.FnPlotValue;
+
+/* Preliminaries to set up and use the scanner.  */
+parser code {:
+		FnPlotLexer lexer;
+
+		public FnPlotParser(FnPlotLexer l) {
+		    // As of CUP v0.11, need to pass Lexer to superclass
+		    super(l);
+		    lexer = l;
+		}
+
+		public void report_error(String message, Object info) {
+		    System.err.println(message);
+		}
+
+		public void syntax_error(Symbol cur_token) {
+		    System.err.print("Line " + lexer.getLine() +
+				     " near char " + lexer.getChar() + ": ");
+		    report_error("Syntax error", cur_token);
+		    System.err.println ("Last token read is " +
+					 lexer.getText());
+		}
+	    :};
+
+init with {:
+	  :};
+
+scan with {:
+		try {
+		    return lexer.next_token();
+		} catch (java.io.IOException ioe) {
+                    String msg = "Line " + lexer.getLine() + ", pos " +
+				       lexer.getColumn() +
+				       ": Unrecognised token <" +
+				       lexer.getText() + ">";
+		    throw new SyntaxFnPlotException(msg, ioe);
+		}
+	  :};
+
+/* Terminals (tokens returned by the scanner). */
+
+// special symbols
+terminal LPAREN, RPAREN, LBRACKET, RBRACKET;
+
+// arithmetic operators
+terminal PLUS, MINUS, MUL, DIV, MOD, ASSIGN, POW;
+terminal LET, IN, LBRACE, RBRACE;
+terminal SEMI, COLON;
+terminal COMMA, FUN, PLOT, CLEAR, MAPSTO, FOR;
+
+// terminals with values
+terminal Integer INTEGER;
+terminal Double REAL;
+terminal String VARIABLE;
+
+/* Non terminals */
+non terminal ArithProgram program;
+non terminal StmtSequence stmtList;
+non terminal Statement stmt;
+non terminal StmtDefinition definition;
+
+non terminal StmtLet letExp;
+non terminal ArrayList<Binding> bindings;
+non terminal ArrayList<Binding> bindingsAux;
+non terminal Binding binding;
+
+non terminal Exp expression;
+non terminal Exp arithExp;
+non terminal Exp term;
+non terminal Exp factor;
+non terminal Exp power; 
+non terminal FnPlotValue<?> number;
+non terminal empty;
+
+/* Grammar rules */
+
+program ::= stmtList:s {: RESULT = new ArithProgram(s); :};
+
+stmtList ::= stmtList:lst stmt:s {:
+		lst.add(s); 
+		RESULT = lst;
+		:} |
+	     stmt:s {:
+		RESULT = new StmtSequence(s);
+		:};
+
+stmt ::= definition:d {: RESULT = d; :} |
+	 expression:e SEMI {: RESULT = e; :};
+
+expression ::=  letExp:l {: RESULT = l; :} |
+		LBRACE stmtList:body RBRACE {: RESULT = body; :} |
+		arithExp:a {: RESULT = a; :} ;
+
+letExp ::= LET bindings:bs IN expression:body {:
+			RESULT = new StmtLet(bs, body);
+           :};
+
+binding ::= VARIABLE:v ASSIGN expression:e {:
+		RESULT = new Binding(v, e);
+	    :};
+
+bindings ::= binding:b bindingsAux:bl {:
+		bl.add(0,b);
+		RESULT = bl;
+	     :} |
+		empty {: RESULT = new ArrayList(); :};
+
+bindingsAux ::= COMMA binding:b bindingsAux:bl {:
+		  bl.add(0,b);
+		  RESULT = bl;
+		:} |
+		empty {: RESULT = new ArrayList(); :};
+
+definition ::= VARIABLE:v ASSIGN expression:e SEMI {:
+		   RESULT = new StmtDefinition(v, e);
+		:};
+
+arithExp ::= 	arithExp:e PLUS term:t {:
+			RESULT = new ExpAdd(e, t); :} |
+		arithExp:e MINUS term:t {:
+			RESULT = new ExpSub(e, t); :} |
+		term:t {: RESULT = t; :};
+
+term ::= term:t MUL factor:f {:
+		RESULT = new ExpMul(t, f); :} |
+	 term:t DIV factor:f {:
+		RESULT = new ExpDiv(t, f); :} |
+	 term:t MOD factor:f {:
+		RESULT = new ExpMod(t, f); :} |
+	 factor:f {: RESULT = f; :};
+
+factor ::= factor:f POW power:p {: RESULT = new ExpPow(f, p); :} |
+			power:p {: RESULT = p; :};
+
+number ::= INTEGER:ilit {: RESULT = FnPlotValue.make(ilit); :} | 
+		   REAL:rlit {: RESULT = FnPlotValue.make(rlit); :};
+
+power ::= number:n {: RESULT = new ExpLit(n); :} |
+	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
+	   LPAREN expression:e RPAREN {: RESULT = e; :}	;
+
+empty ::= ;

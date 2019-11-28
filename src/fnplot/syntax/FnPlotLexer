@@ -1,0 +1,115 @@
+package fnplot.syntax;
+
+/* Specification for ArithExp tokens */
+
+// user customisations
+import java_cup.runtime.*;
+
+// Jlex directives
+%%
+    
+%cup
+%public
+
+%class FnPlotLexer
+
+%type java_cup.runtime.Symbol
+
+%eofval{
+	return new Symbol(sym.EOF);
+%eofval}
+
+%eofclose	false
+
+%char
+%line
+
+%{
+    public int getChar() {
+	return yychar + 1;
+    }
+
+    public int getColumn() {
+    	return yycolumn + 1;
+    }
+
+    public int getLine() {
+	return yyline + 1;
+    }
+
+    public String getText() {
+	return yytext();
+    }
+%}
+
+nl = [\n\r]
+
+cc = ([\b\f]|{nl})
+
+ws = {cc}|[\t ]
+
+alpha = [a-zA-Z_]
+
+num = [0-9]
+
+real = -?[0-9]+\.[0-9]+
+
+neg = -[0-9]
+
+alphanum = {alpha}|{num}
+
+%%
+
+<YYINITIAL>	{nl}	{
+                        //skip newline, but reset char counter
+			yycolumn = 0;
+			}
+<YYINITIAL>	{ws}	{
+                        //skip whitespace
+			}
+<YYINITIAL>	"+"	{return new Symbol(sym.PLUS);}
+<YYINITIAL>	"-"	{return new Symbol(sym.MINUS);}
+<YYINITIAL>	"*"	{return new Symbol(sym.MUL);}
+<YYINITIAL>	"/"	{return new Symbol(sym.DIV);}
+<YYINITIAL>	"%"	{return new Symbol(sym.MOD);}
+<YYINITIAL>	"="	{return new Symbol(sym.ASSIGN);}
+<YYINITIAL> "^" {return new Symbol(sym.POW);}
+
+<YYINITIAL> "[" {return new Symbol(sym.LBRACKET);}
+<YYINITIAL> "]" {return new Symbol(sym.RBRACKET);}
+
+<YYINITIAL>	"("	{return new Symbol(sym.LPAREN);}
+<YYINITIAL>	")"	{return new Symbol(sym.RPAREN);}
+
+<YYINITIAL>	"{"	{return new Symbol(sym.LBRACE);}
+<YYINITIAL>	"}"	{return new Symbol(sym.RBRACE);}
+
+<YYINITIAL>	","	{return new Symbol(sym.COMMA);}
+
+<YYINITIAL>	"let"	 {return new Symbol(sym.LET);}
+<YYINITIAL>	"in"	 {return new Symbol(sym.IN);}
+<YYINITIAL> "fun"	 {return new Symbol(sym.FUN);}
+<YYINITIAL> "mapsto" {return new Symbol(sym.MAPSTO);}
+<YYINITIAL> "for"	 {return new Symbol(sym.FOR);}
+<YYINITIAL> "plot"	 {return new Symbol(sym.PLOT);}
+<YYINITIAL> "clear"	 {return new Symbol(sym.CLEAR);}
+
+<YYINITIAL>	";" 	{return new Symbol(sym.SEMI);}
+<YYINITIAL> ":" 	{return new Symbol(sym.COLON);}
+
+<YYINITIAL>    {num}+ | {neg} {
+	       // INTEGER
+	       return new Symbol(sym.INTEGER, 
+				 new Integer(yytext()));
+	       }
+
+<YYINITIAL>    {real} {
+	       // INTEGER
+	       return new Symbol(sym.REAL, 
+				 new Double (yytext()));
+	       }
+
+<YYINITIAL>    {alpha}{alphanum}* {
+	       // VARIABLE
+	       return new Symbol(sym.VARIABLE, yytext());
+	       }
