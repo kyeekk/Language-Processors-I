@@ -40,11 +40,11 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
    */
   private static final String ZZ_CMAP_PACKED = 
     "\10\0\1\2\1\2\1\1\1\0\1\2\1\1\22\0\1\2\4\0"+
-    "\1\12\2\0\1\17\1\20\1\10\1\7\1\23\1\5\1\6\1\11"+
-    "\12\4\1\43\1\42\1\0\1\13\3\0\32\3\1\15\1\0\1\16"+
-    "\1\14\1\3\1\0\1\34\1\3\1\41\1\3\1\25\1\31\2\3"+
-    "\1\27\2\3\1\24\1\33\1\30\1\37\1\35\1\3\1\40\1\36"+
-    "\1\26\1\32\5\3\1\21\1\0\1\22\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
+    "\1\12\2\0\1\17\1\20\1\10\1\7\1\24\1\5\1\6\1\11"+
+    "\12\4\1\44\1\43\1\0\1\13\1\23\2\0\32\3\1\15\1\0"+
+    "\1\16\1\14\1\3\1\0\1\35\1\3\1\42\1\3\1\26\1\32"+
+    "\2\3\1\30\2\3\1\25\1\34\1\31\1\40\1\36\1\3\1\41"+
+    "\1\37\1\27\1\33\5\3\1\21\1\0\1\22\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
 
   /** 
    * Translates characters to character classes
@@ -60,11 +60,11 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
     "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
     "\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1\17"+
     "\1\20\1\21\1\22\6\3\1\23\1\24\1\0\1\4"+
-    "\1\3\1\25\5\3\1\26\1\0\1\27\1\30\1\31"+
-    "\4\3\1\32\2\3\1\33\1\34";
+    "\1\25\1\3\1\26\5\3\1\27\1\0\1\30\1\31"+
+    "\1\32\4\3\1\33\2\3\1\34\1\25";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[50];
+    int [] result = new int[51];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -89,16 +89,16 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\44\0\44\0\110\0\154\0\220\0\44\0\44"+
-    "\0\44\0\44\0\44\0\44\0\44\0\44\0\44\0\44"+
-    "\0\44\0\44\0\44\0\264\0\330\0\374\0\u0120\0\u0144"+
-    "\0\u0168\0\44\0\44\0\u018c\0\u01b0\0\u01d4\0\110\0\u01f8"+
-    "\0\u021c\0\u0240\0\u0264\0\u0288\0\u018c\0\u01b0\0\110\0\110"+
-    "\0\110\0\u02ac\0\u02d0\0\u02f4\0\u0318\0\110\0\u033c\0\u0360"+
-    "\0\110\0\110";
+    "\0\0\0\45\0\45\0\112\0\157\0\224\0\45\0\45"+
+    "\0\45\0\45\0\45\0\45\0\45\0\45\0\45\0\45"+
+    "\0\45\0\45\0\45\0\271\0\336\0\u0103\0\u0128\0\u014d"+
+    "\0\u0172\0\45\0\45\0\u0197\0\u01bc\0\45\0\u01e1\0\112"+
+    "\0\u0206\0\u022b\0\u0250\0\u0275\0\u029a\0\u0197\0\u01bc\0\112"+
+    "\0\112\0\112\0\u02bf\0\u02e4\0\u0309\0\u032e\0\112\0\u0353"+
+    "\0\u0378\0\112\0\112";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[50];
+    int [] result = new int[51];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -123,27 +123,28 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\0\1\2\1\3\1\4\1\5\1\6\1\0\1\7"+
     "\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1\17"+
-    "\1\20\1\21\1\22\1\23\1\24\2\4\1\25\1\4"+
-    "\1\26\1\4\1\27\1\4\1\30\3\4\1\31\1\32"+
-    "\1\33\47\0\2\4\17\0\16\4\6\0\1\5\1\0"+
-    "\1\34\41\0\1\35\42\0\2\4\17\0\1\4\1\36"+
-    "\14\4\5\0\2\4\17\0\4\4\1\37\11\4\5\0"+
-    "\2\4\17\0\6\4\1\40\4\4\1\41\2\4\5\0"+
-    "\2\4\17\0\10\4\1\42\5\4\5\0\2\4\17\0"+
-    "\1\43\15\4\5\0\2\4\17\0\1\44\15\4\6\0"+
-    "\1\45\43\0\1\46\1\0\1\34\40\0\2\4\17\0"+
-    "\2\4\1\47\13\4\5\0\2\4\17\0\4\4\1\50"+
-    "\11\4\5\0\2\4\17\0\14\4\1\51\1\4\5\0"+
-    "\2\4\17\0\11\4\1\52\4\4\5\0\2\4\17\0"+
-    "\13\4\1\53\2\4\5\0\2\4\17\0\1\4\1\54"+
-    "\14\4\5\0\2\4\17\0\12\4\1\55\3\4\5\0"+
-    "\2\4\17\0\2\4\1\56\13\4\5\0\2\4\17\0"+
-    "\10\4\1\57\5\4\5\0\2\4\17\0\2\4\1\60"+
-    "\13\4\5\0\2\4\17\0\14\4\1\61\1\4\5\0"+
-    "\2\4\17\0\13\4\1\62\2\4\2\0";
+    "\1\20\1\21\1\22\1\0\1\23\1\24\2\4\1\25"+
+    "\1\4\1\26\1\4\1\27\1\4\1\30\3\4\1\31"+
+    "\1\32\1\33\50\0\2\4\20\0\16\4\6\0\1\5"+
+    "\1\0\1\34\42\0\1\35\16\0\1\36\24\0\2\4"+
+    "\20\0\1\4\1\37\14\4\5\0\2\4\20\0\4\4"+
+    "\1\40\11\4\5\0\2\4\20\0\6\4\1\41\4\4"+
+    "\1\42\2\4\5\0\2\4\20\0\10\4\1\43\5\4"+
+    "\5\0\2\4\20\0\1\44\15\4\5\0\2\4\20\0"+
+    "\1\45\15\4\6\0\1\46\44\0\1\47\1\0\1\34"+
+    "\41\0\2\4\20\0\2\4\1\50\13\4\5\0\2\4"+
+    "\20\0\4\4\1\51\11\4\5\0\2\4\20\0\14\4"+
+    "\1\52\1\4\5\0\2\4\20\0\11\4\1\53\4\4"+
+    "\5\0\2\4\20\0\13\4\1\54\2\4\5\0\2\4"+
+    "\20\0\1\4\1\55\14\4\5\0\2\4\20\0\12\4"+
+    "\1\56\3\4\5\0\2\4\20\0\2\4\1\57\13\4"+
+    "\5\0\2\4\20\0\10\4\1\60\5\4\5\0\2\4"+
+    "\20\0\2\4\1\61\13\4\5\0\2\4\20\0\14\4"+
+    "\1\62\1\4\5\0\2\4\20\0\13\4\1\63\2\4"+
+    "\2\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[900];
+    int [] result = new int[925];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -181,11 +182,11 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\2\11\3\1\15\11\6\1\2\11\1\0\11\1"+
-    "\1\0\14\1";
+    "\1\0\2\11\3\1\15\11\6\1\2\11\1\0\1\1"+
+    "\1\11\10\1\1\0\14\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[50];
+    int [] result = new int[51];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -298,7 +299,7 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 146) {
+    while (i < 148) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -752,44 +753,44 @@ public class FnPlotLexer implements java_cup.runtime.Scanner {
             // fall through
           case 48: break;
           case 21: 
-            { return new Symbol(sym.IN);
+            { return new Symbol(sym.MAPSTO);
             } 
             // fall through
           case 49: break;
           case 22: 
+            { return new Symbol(sym.IN);
+            } 
+            // fall through
+          case 50: break;
+          case 23: 
             { // INTEGER
 	       return new Symbol(sym.REAL, 
 				 new Double (yytext()));
             } 
             // fall through
-          case 50: break;
-          case 23: 
-            { return new Symbol(sym.LET);
-            } 
-            // fall through
           case 51: break;
           case 24: 
-            { return new Symbol(sym.FUN);
+            { return new Symbol(sym.LET);
             } 
             // fall through
           case 52: break;
           case 25: 
-            { return new Symbol(sym.FOR);
+            { return new Symbol(sym.FUN);
             } 
             // fall through
           case 53: break;
           case 26: 
-            { return new Symbol(sym.PLOT);
+            { return new Symbol(sym.FOR);
             } 
             // fall through
           case 54: break;
           case 27: 
-            { return new Symbol(sym.CLEAR);
+            { return new Symbol(sym.PLOT);
             } 
             // fall through
           case 55: break;
           case 28: 
-            { return new Symbol(sym.MAPSTO);
+            { return new Symbol(sym.CLEAR);
             } 
             // fall through
           case 56: break;

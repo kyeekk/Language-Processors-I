@@ -1,4 +1,4 @@
-package fnplot.syntax;
+   package fnplot.syntax;
 
 import java_cup.runtime.*;
 import java.io.*;
@@ -70,12 +70,19 @@ non terminal StmtLet letExp;
 non terminal ArrayList<Binding> bindings;
 non terminal ArrayList<Binding> bindingsAux;
 non terminal Binding binding;
+non terminal ArrayList<String> paramList;
+non terminal ArrayList<String> paramListE;
+non terminal ArrayList<Exp> expList;
+non terminal ArrayList<Exp> expListE;
 
 non terminal Exp expression;
+non terminal Exp plotter;
 non terminal Exp arithExp;
 non terminal Exp term;
 non terminal Exp factor;
-non terminal Exp power; 
+non terminal Exp power;
+non terminal Exp funDef;
+non terminal Exp funCall;
 non terminal FnPlotValue<?> number;
 non terminal empty;
 
@@ -121,6 +128,29 @@ bindingsAux ::= COMMA binding:b bindingsAux:bl {:
 definition ::= VARIABLE:v ASSIGN expression:e SEMI {:
 		   RESULT = new StmtDefinition(v, e);
 		:};
+		                                                                                                      
+funDef ::= FUN LPAREN paramListE: pl RPAREN MAPSTO expression: body {: RESULT = new ExpFunction(pl, body); :};
+
+paramListE ::= paramList: pl {: RESULT = pl; :} | empty {: RESULT = new ArrayList(); :};
+
+paramList ::= paramList:pl COMMA VARIABLE:v {: pl.add(v); 
+											RESULT = pl; :} |
+				VARIABLE: v {: ArrayList<String> ls = new ArrayList<>(); 
+							ls.add(v);
+							RESULT = ls; :};
+
+funCall ::= VARIABLE:v LPAREN expListE:el RPAREN{: RESULT = new ExpFunctionCall(v, el); :};
+
+expListE ::= expList: pl {: RESULT = pl; :} | empty {: RESULT = new ArrayList(); :};
+
+expList ::= expList:pl COMMA expression:e {: pl.add(e); 
+											RESULT = pl; :} |
+			expression :e {: ArrayList<Exp> ls = new ArrayList<>(); 
+							ls.add(e);
+							RESULT = ls; :};
+
+plotter ::= PLOT expression:e FOR VARIABLE:v IN LSQUARE VARIABLE:lL COLON VARIABLE:uL RSQUARE {: 
+	RESULT = new ExpPlot(e,v,lL,uL);  :};
 
 arithExp ::= 	arithExp:e PLUS term:t {:
 			RESULT = new ExpAdd(e, t); :} |

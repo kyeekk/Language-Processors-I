@@ -13,6 +13,8 @@ import fnplot.syntax.ExpVar;
 import fnplot.syntax.ExpPow;
 import fnplot.syntax.ExpAdd;
 import fnplot.syntax.ArithProgram;
+import fnplot.syntax.ExpFunction;
+import fnplot.syntax.ExpFunCall;
 import fnplot.sys.FnPlotException;
 
 /**
@@ -48,6 +50,36 @@ public interface Visitor<S, T> {
      */
     public T visitStmtDefinition(StmtDefinition sd, S arg) throws FnPlotException;
     
+    /**
+     * Visit a function definition statement.
+     * @param fd The assignment AST node to be visited.
+     * @param arg The "state" to be referenced by this visitor while visiting 
+     * the given node.
+     * @return The result of visiting the given statement sequence.
+     * @throws FnPlotException If an error arises while visiting the node.
+     */
+    public T visitFunDefn(ExpFunction fd, S arg) throws FnPlotException;
+
+    /**
+     * Visit a function call statement.
+     * @param exp The assignment AST node to be visited.
+     * @param arg The "state" to be referenced by this visitor while visiting 
+     * the given node.
+     * @return The result of visiting the given statement sequence.
+     * @throws FnPlotException If an error arises while visiting the node.
+     */
+    public T visitFunCall(ExpFunCall exp, S arg) throws FnPlotException;
+
+    /**
+     * Visit a function call statement.
+     * @param exp The plot AST node to be visited.
+     * @param arg The "state" to be referenced by this visitor while visiting 
+     * the given node.
+     * @return The result of visiting the given statement sequence.
+     * @throws FnPlotException If an error arises while visiting the node.
+     */
+    // public T visitFunPlot(ExpFunPlot exp, S arg) throws FnPlotException;
+
     /**
      * Visit a let expression.
      * @param letExp The let AST node to be visited.

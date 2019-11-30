@@ -1,6 +1,6 @@
 @echo off
 
-set BASE="C:\Users\kayla\Documents\UWI YEAR 3 SEM 1\COMP3652 - Language Processors"
+set BASE="C:\Users\kayla\Documents\Language-Processors-I"
 
 set CUP_VERSION=11b
 set CUP_ALIAS=cup

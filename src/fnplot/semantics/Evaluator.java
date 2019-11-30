@@ -16,7 +16,9 @@ import fnplot.syntax.Binding;
 import fnplot.syntax.ArithProgram;
 import fnplot.syntax.Exp;
 import fnplot.syntax.ExpFunction;
+import fnplot.syntax.ExpFunCall;
 import fnplot.sys.FnPlotException;
+import fnplot.values.FnPlotFunction;
 import fnplot.values.FnPlotReal;
 import fnplot.values.FnPlotValue;
 import java.awt.geom.Point2D;
@@ -132,6 +134,28 @@ public class Evaluator
 	// create new env as child of current
 	Environment<FnPlotValue<?>> newEnv = new Environment<> (vars, vals, env);
 	return body.visit(this, newEnv);
+    }
+
+    @Override
+    public FnPlotValue<?> visitFunDefn(ExpFunction defn, Environment<FnPlotValue<?>> env)
+	throws FnPlotException {
+    FnPlotFunction c = new FnPlotFunction(defn, env);
+    return c;
+    }
+
+    @Override
+    public FnPlotValue<?> visitFunCall(ExpFunCall callExp, Environment<FnPlotValue<?>> env)
+    throws FnPlotException 
+    {
+        String name = callExp.getName();
+        ArrayList<Exp> args = callExp.getArguments();
+        FnPlotFunction fun = (FnPlotFunction) env.get(name);
+        ArrayList<FnPlotValue> values = new ArrayList<>();
+        for (Exp funarg : args){
+            values.add(funarg.visit(this, env));
+        }
+        Environment newEnv = new Environment(fun.getFunExp().getParameters(), values, fun.getClosingEnv());
+        return fun.getFunExp().getBody().visit(this, newEnv);    
     }
 
     @Override

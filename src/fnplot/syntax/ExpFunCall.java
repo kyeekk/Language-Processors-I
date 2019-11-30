@@ -33,43 +33,49 @@ import java.util.ArrayList;
  *
  * @author newts
  */
-public class ExpFunction  extends Exp {
+public class ExpFunCall  extends Exp {
     
-    ArrayList<String> parameters;
-    Exp body;
+    ArrayList<Exp> arguments;
+    String name;
 
-    public ExpFunction() {
+    public ExpFunCall() {
         super();
     }
 
-    public ExpFunction(ArrayList<String> parameters, Exp body) {
-        this.parameters = parameters;
-        this.body = body;
+    public ExpFunCall(String name, ArrayList<Exp> args, Exp body) {
+        this.name = name;
+        this.arguments = args;
     }
 
-    public ArrayList<String> getParameters() {
-        return parameters;
-    }    
-
-    public Exp getBody() {
-        return body;
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+    
+    
+    public ArrayList<Exp> getArguments() {
+        return arguments;
     }
     
     @Override
     public <S, T> T visit(Visitor<S, T> v, S state) throws FnPlotException {
-        return v.visitFunDefn(this, state);
+        return v.visitFunCall(this, state);
     }
 
     @Override
     public String toString() {
-        String paramStr = "";
-        if (parameters.size() > 0) {
-            paramStr = parameters.get(0);
+        StringBuilder argStr = new StringBuilder("");
+        int n = arguments.size();
+        if (n > 0) {
+            argStr.append(arguments.get(0));
+            for(int i = 1; i < n; i++) {
+                argStr.append(", ");
+                argStr.append(arguments.get(i));
+            }
         }
-        for (int i = 1; i < parameters.size(); i++) {
-            paramStr = paramStr + ", " + parameters.get(i);
-        }
-        return String.format("(fun (%s) -> %s)", paramStr, body);
+        return String.format("%s(%s)", name, argStr.toString());
     }
 
 }
