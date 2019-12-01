@@ -103,7 +103,10 @@ stmt ::= definition:d {: RESULT = d; :} |
 
 expression ::=  letExp:l {: RESULT = l; :} |
 		LBRACE stmtList:body RBRACE {: RESULT = body; :} |
-		arithExp:a {: RESULT = a; :} ;
+		arithExp:a {: RESULT = a; :} |
+		funDef:fd {: RESULT = fd; :} |
+		funCall:f {: RESULT = f; :} |
+		plot:p {: RESULT = p; :};
 
 letExp ::= LET bindings:bs IN expression:body {:
 			RESULT = new StmtLet(bs, body);

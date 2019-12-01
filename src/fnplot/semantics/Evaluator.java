@@ -12,6 +12,7 @@ import fnplot.syntax.ExpAdd;
 import fnplot.syntax.ExpVar;
 import fnplot.syntax.ExpMod;
 import fnplot.syntax.ExpSub;
+import fnplot.syntax.ExpPlot;
 import fnplot.syntax.Binding;
 import fnplot.syntax.ArithProgram;
 import fnplot.syntax.Exp;
@@ -70,156 +71,179 @@ public class Evaluator
      * Set the plotting device.
      * @param plotter The plotting device to be used by this interpreter.
      */
-    public void setPlotter(Plotter plotter) {
+    public void setPlotter(final Plotter plotter) {
         this.plotter = plotter;
     }
 
     /**
-     * Visit a node representing the overall program.  This will be similar to
-     * visiting the sequence of statements that make up the program, but is
-     * provided as a separate method so that any top-level, one-time actions 
-     * can be taken to initialise the context for the program, if necessary.
-     * @param p The program node to be traversed.
+     * Visit a node representing the overall program. This will be similar to
+     * visiting the sequence of statements that make up the program, but is provided
+     * as a separate method so that any top-level, one-time actions can be taken to
+     * initialise the context for the program, if necessary.
+     * 
+     * @param p   The program node to be traversed.
      * @param arg The environment to be used while traversing the program.
-     * @return The result of the last statement of the program, after evaluating
-     * all the preceding ones in order.
-     * @throws FnPlotException if any of the statements in the body of the 
-     * program throws an exception.
+     * @return The result of the last statement of the program, after evaluating all
+     *         the preceding ones in order.
+     * @throws FnPlotException if any of the statements in the body of the program
+     *                         throws an exception.
      */
     @Override
-    public FnPlotValue<?> visitArithProgram(ArithProgram p, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	result = p.getSeq().visit(this, arg);
-	return result;
+    public FnPlotValue<?> visitArithProgram(final ArithProgram p, final Environment<FnPlotValue<?>> arg)
+            throws FnPlotException {
+        result = p.getSeq().visit(this, arg);
+        return result;
     }
 
     @Override
-    public FnPlotValue<?> visitStmtSequence(StmtSequence sseq, Environment<FnPlotValue<?>> env)
-	throws FnPlotException {
-	ArrayList<Statement> seq = sseq.getSeq();
-	Iterator<Statement> iter = seq.iterator();
-	result = FnPlotValue.make(0); // default result
-        for (Statement s : seq) {
+    public FnPlotValue<?> visitStmtSequence(final StmtSequence sseq, final Environment<FnPlotValue<?>> env)
+            throws FnPlotException {
+        final ArrayList<Statement> seq = sseq.getSeq();
+        final Iterator<Statement> iter = seq.iterator();
+        result = FnPlotValue.make(0); // default result
+        for (final Statement s : seq) {
             result = s.visit(this, env);
         }
-	// return last value evaluated
-	return result;
+        // return last value evaluated
+        return result;
     }
 
     @Override
-    public FnPlotValue<?> visitStmtDefinition(StmtDefinition sd, Environment<FnPlotValue<?>> env)
-	throws FnPlotException {
-	result = sd.getExp().visit(this, env);
-	env.put(sd.getVar(), result);
-	return result;
+    public FnPlotValue<?> visitStmtDefinition(final StmtDefinition sd, final Environment<FnPlotValue<?>> env)
+            throws FnPlotException {
+        result = sd.getExp().visit(this, env);
+        env.put(sd.getVar(), result);
+        return result;
     }
 
     @Override
-    public FnPlotValue<?> visitStmtLet(StmtLet let, Environment<FnPlotValue<?>> env) 
-	throws FnPlotException {
-	ArrayList<Binding> bindings = let.getBindings();
-	Exp body = let.getBody();
+    public FnPlotValue<?> visitStmtLet(final StmtLet let, final Environment<FnPlotValue<?>> env)
+            throws FnPlotException {
+        final ArrayList<Binding> bindings = let.getBindings();
+        final Exp body = let.getBody();
 
-	int size = bindings.size();
-	String[] vars = new String[size];
-	FnPlotValue<?>[] vals = new FnPlotValue<?>[size];
-	Binding b;
-	for (int i = 0; i < size; i++) {
-	    b = bindings.get(i);
-	    vars[i] = b.getVar();
-	    // evaluate each expression in bindings
-	    result = b.getValExp().visit(this, env);
-	    vals[i] = result;
-	}
-	// create new env as child of current
-	Environment<FnPlotValue<?>> newEnv = new Environment<> (vars, vals, env);
-	return body.visit(this, newEnv);
+        final int size = bindings.size();
+        final String[] vars = new String[size];
+        final FnPlotValue<?>[] vals = new FnPlotValue<?>[size];
+        Binding b;
+        for (int i = 0; i < size; i++) {
+            b = bindings.get(i);
+            vars[i] = b.getVar();
+            // evaluate each expression in bindings
+            result = b.getValExp().visit(this, env);
+            vals[i] = result;
+        }
+        // create new env as child of current
+        final Environment<FnPlotValue<?>> newEnv = new Environment<>(vars, vals, env);
+        return body.visit(this, newEnv);
     }
 
     @Override
-    public FnPlotValue<?> visitFunDefn(ExpFunction defn, Environment<FnPlotValue<?>> env)
-	throws FnPlotException {
-    FnPlotFunction c = new FnPlotFunction(defn, env);
-    return c;
+    public FnPlotValue<?> visitFunDefn(final ExpFunction defn, final Environment<FnPlotValue<?>> env)
+            throws FnPlotException {
+        final FnPlotFunction c = new FnPlotFunction(defn, env);
+        return c;
     }
 
     @Override
-    public FnPlotValue<?> visitFunCall(ExpFunCall callExp, Environment<FnPlotValue<?>> env)
-    throws FnPlotException 
-    {
-        String name = callExp.getName();
-        ArrayList<Exp> args = callExp.getArguments();
-        FnPlotFunction fun = (FnPlotFunction) env.get(name);
-        ArrayList<FnPlotValue> values = new ArrayList<>();
-        for (Exp funarg : args){
+    public FnPlotValue<?> visitFunCall(final ExpFunCall callExp, final Environment<FnPlotValue<?>> env)
+            throws FnPlotException {
+        final String name = callExp.getName();
+        final ArrayList<Exp> args = callExp.getArguments();
+        final FnPlotFunction fun = (FnPlotFunction) env.get(name);
+        final ArrayList<FnPlotValue> values = new ArrayList<>();
+        for (final Exp funarg : args) {
             values.add(funarg.visit(this, env));
         }
-        Environment newEnv = new Environment(fun.getFunExp().getParameters(), values, fun.getClosingEnv());
-        return fun.getFunExp().getBody().visit(this, newEnv);    
+        final Environment newEnv = new Environment(fun.getFunExp().getParameters(), values, fun.getClosingEnv());
+        return fun.getFunExp().getBody().visit(this, newEnv);
     }
 
     @Override
-    public FnPlotValue<?> visitExpAdd(ExpAdd exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	FnPlotValue<?> val1, val2;
-	val1 = exp.getExpL().visit(this, arg);
-	val2 = exp.getExpR().visit(this, arg);
-	return val1.add(val2);
+    public FnPlotValue<?> visitFunPlot(final ExpPlot exp, final Environment<FnPlotValue<?>> env)
+            throws FnPlotException {
+        final String id = exp.getItem();
+        final Double start = exp.getStart();
+        final Double end = exp.getEnd();
+        final Exp fun = exp.getMap();
+        final double[] xpoints = plotter.sample(start, end);
+        final Point2D[] ypoints = new Point2D[xpoints.length];
+
+        final Environment<FnPlotValue<?>> newEnv = new Environment(new ArrayList<>(), new ArrayList<>(), env);
+        FnPlotValue y;
+        for (int x = 0; x < xpoints.length; x++) {
+            newEnv.put(id, FnPlotValue.make(xpoints[x]));
+            y = fun.visit(this, newEnv);
+            ypoints[x] = new Point2D.Double(xpoints[x], y.doubleValue());
+        }
+
+        this.plotter.plot(ypoints);
+        return null;
     }
 
     @Override
-    public FnPlotValue<?> visitExpSub(ExpSub exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	FnPlotValue<?> val1, val2;
-	val1 = exp.getExpL().visit(this, arg);
-	val2 = exp.getExpR().visit(this, arg);
-	return val1.sub(val2);
+    public FnPlotValue<?> visitClear(final ExpClear exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        this.plotter.clear();
+        return exp.visit(this, env);       
+    }
+
+
+
+    @Override
+    public FnPlotValue<?> visitExpAdd(final ExpAdd exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = exp.getExpL().visit(this, arg);
+        val2 = exp.getExpR().visit(this, arg);
+        return val1.add(val2);
     }
 
     @Override
-    public FnPlotValue<?> visitExpMul(ExpMul exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	FnPlotValue<?> val1, val2;
-	val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
-	val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
-	return val1.mul(val2);
+    public FnPlotValue<?> visitExpSub(final ExpSub exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = exp.getExpL().visit(this, arg);
+        val2 = exp.getExpR().visit(this, arg);
+        return val1.sub(val2);
     }
 
     @Override
-    public FnPlotValue<?> visitExpPow(ExpPow exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	FnPlotValue<?> val1, val2;
-	val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
-	val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
-	return val1.pow(val2);
+    public FnPlotValue<?> visitExpMul(final ExpMul exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
+        val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
+        return val1.mul(val2);
     }
 
     @Override
-    public FnPlotValue<?> visitExpDiv(ExpDiv exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	FnPlotValue<?> val1, val2;
-	val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
-	val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
-	return val1.div(val2);
+    public FnPlotValue<?> visitExpPow(final ExpPow exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
+        val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
+        return val1.pow(val2);
     }
 
     @Override
-    public FnPlotValue<?> visitExpMod(ExpMod exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	FnPlotValue<?> val1, val2;
-	val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
-	val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
-	return val1.mod(val2);
+    public FnPlotValue<?> visitExpDiv(final ExpDiv exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
+        val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
+        return val1.div(val2);
     }
 
     @Override
-    public FnPlotValue<?> visitExpLit(ExpLit exp, Environment<FnPlotValue<?>> arg)
-	throws FnPlotException {
-	return exp.getVal();
+    public FnPlotValue<?> visitExpMod(final ExpMod exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
+        val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
+        return val1.mod(val2);
     }
 
     @Override
-    public FnPlotValue<?> visitExpVar(ExpVar exp, Environment<FnPlotValue<?>> env)
+    public FnPlotValue<?> visitExpLit(final ExpLit exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        return exp.getVal();
+    }
+
+    @Override
+    public FnPlotValue<?> visitExpVar(final ExpVar exp, final Environment<FnPlotValue<?>> env)
 	throws FnPlotException {
 	return env.get(exp.getVar());
     }

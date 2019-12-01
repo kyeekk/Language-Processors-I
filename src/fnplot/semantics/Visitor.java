@@ -15,6 +15,7 @@ import fnplot.syntax.ExpAdd;
 import fnplot.syntax.ArithProgram;
 import fnplot.syntax.ExpFunction;
 import fnplot.syntax.ExpFunCall;
+import fnplot.syntax.ExpPlot;
 import fnplot.sys.FnPlotException;
 
 /**
@@ -78,7 +79,17 @@ public interface Visitor<S, T> {
      * @return The result of visiting the given statement sequence.
      * @throws FnPlotException If an error arises while visiting the node.
      */
-    // public T visitFunPlot(ExpFunPlot exp, S arg) throws FnPlotException;
+    public T visitFunPlot(ExpPlot exp, S arg) throws FnPlotException;
+
+    /**
+     * Visit a function call statement.
+     * @param exp The clear AST node to be visited.
+     * @param arg The "state" to be referenced by this visitor while visiting 
+     * the given node.
+     * @return The result of visiting the given statement sequence.
+     * @throws FnPlotException If an error arises while visiting the node.
+     */
+    public T visitClear(ExpClear exp, S arg) throws FnPlotException;
 
     /**
      * Visit a let expression.

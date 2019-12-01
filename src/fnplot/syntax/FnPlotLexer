@@ -81,10 +81,10 @@ alphanum = {alpha}|{num}
 <YYINITIAL>	"("	{return new Symbol(sym.LPAREN);}
 <YYINITIAL>	")"	{return new Symbol(sym.RPAREN);}
 
-<YYINITIAL>	"{"	{return new Symbol(sym.LBRACE);}
-<YYINITIAL>	"}"	{return new Symbol(sym.RBRACE);}
+<YYINITIAL>	"{"  {return new Symbol(sym.LBRACE);}
+<YYINITIAL>	"}"	 {return new Symbol(sym.RBRACE);}
 <YYINITIAL> "->" {return new Symbol(sym.MAPSTO);}
-<YYINITIAL>	","	{return new Symbol(sym.COMMA);}
+<YYINITIAL>	","	 {return new Symbol(sym.COMMA);}
 
 <YYINITIAL>	"let"	 {return new Symbol(sym.LET);}
 <YYINITIAL>	"in"	 {return new Symbol(sym.IN);}
