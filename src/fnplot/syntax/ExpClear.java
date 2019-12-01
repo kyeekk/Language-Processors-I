@@ -3,9 +3,9 @@ package fnplot.syntax;
 import fnplot.sys.FnPlotException;
 import fnplot.semantics.Visitor;
 
-public class PlotCls extends Exp{
+public class ExpClear extends Exp{
 
-    public PlotCls() {}
+    public ExpClear() {}
 
     @Override
     public <S, T> T visit(Visitor<S, T> v, S state) throws FnPlotException {

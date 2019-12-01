@@ -16,6 +16,7 @@ import fnplot.syntax.ArithProgram;
 import fnplot.syntax.ExpFunction;
 import fnplot.syntax.ExpFunCall;
 import fnplot.syntax.ExpPlot;
+import fnplot.syntax.ExpClear;
 import fnplot.sys.FnPlotException;
 
 /**

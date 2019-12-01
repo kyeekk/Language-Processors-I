@@ -18,6 +18,7 @@ import fnplot.syntax.ArithProgram;
 import fnplot.syntax.Exp;
 import fnplot.syntax.ExpFunction;
 import fnplot.syntax.ExpFunCall;
+import fnplot.syntax.ExpClear;
 import fnplot.sys.FnPlotException;
 import fnplot.values.FnPlotFunction;
 import fnplot.values.FnPlotReal;
@@ -182,12 +183,10 @@ public class Evaluator
     }
 
     @Override
-    public FnPlotValue<?> visitClear(final ExpClear exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
+    public FnPlotValue<?> visitClear(final ExpClear exp, final Environment<FnPlotValue<?>> env) throws FnPlotException {
         this.plotter.clear();
         return exp.visit(this, env);       
     }
-
-
 
     @Override
     public FnPlotValue<?> visitExpAdd(final ExpAdd exp, final Environment<FnPlotValue<?>> arg) throws FnPlotException {
